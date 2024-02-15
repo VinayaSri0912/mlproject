@@ -1,7 +1,7 @@
 import os
 from src.exception import CustomException
 from src.logger import logging
-from src.utils import save_obj
+from src.utils import save_object
 
 import pandas as pd
 import numpy as np
@@ -36,8 +36,8 @@ class DataTransformation:
             
             cat_pipeline = Pipeline(
                 steps=[("imputer",SimpleImputer(strategy="most_frequent")),
-                    ("one_hot_encoder",OneHotEncoder(sparse_output= False)),
-                    ("scaler",StandardScaler())
+                    ("one_hot_encoder",OneHotEncoder()),
+                    ("scaler",StandardScaler(with_mean= False))
                     ]
             )
             
@@ -47,7 +47,8 @@ class DataTransformation:
                 [
                     ("num_pipeline",num_pipeline,numerical_columns),
                     ("cat_pipeline",cat_pipeline,categorical_columns)
-                ]
+                ],
+                remainder= "drop"
                 
             )
             return preprocessor
@@ -91,15 +92,15 @@ class DataTransformation:
             train_arr = np.c_[input_train, np.array(target_features_train)]
             test_arr = np.c_[input_test, np.array(target_features_test)]
             
-            save_obj(
+            save_object(
                 preprocessing_obj,
                 self.data_transform_config.processor_path
             )
             
             return (
                 preprocessing_obj,
-                input_train,
-                input_test
+                train_arr,
+                test_arr
             )
             
         except Exception as e:

@@ -5,6 +5,7 @@ import sys
 
 from src.exception import CustomException
 from src.components.data_transformation import DataTransformation
+from src.components.model_trainer import ModelTrainer
 
 import pandas as pd
 
@@ -45,7 +46,9 @@ class DataIngestion :
 if __name__ == "__main__":
     train_path, test_path = DataIngestion().start_dataIngestion()
     data_transformation = DataTransformation()
-    data_transformation.initiate_data_transform(train_path, test_path)
+    _, train_arr, test_arr= data_transformation.initiate_data_transform(train_path, test_path)
+    model = ModelTrainer()
+    print(model.initiate_model_trainer(train_arr, test_arr))
     
             
         
